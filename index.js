@@ -1,7 +1,6 @@
 const {
     Client,
-    MessageEmbed,
-	Message
+    MessageEmbed
 } = require('discord.js');
 const fetch = require('axios')
 const querystring = require('querystring');
@@ -25,7 +24,7 @@ client.on('message', async message => {
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
 
- if (command === 'fetch') {
+	if (command === 'fetch') {
         if (!args.length) {
             return message.channel.send('You need to supply a search term!');
         }
@@ -33,8 +32,7 @@ client.on('message', async message => {
         const query = querystring.stringify({
             term: args.join(' ')
         });
-		message.channel.send('Please wait, this may take a bit...')
-
+		message.channel.send("Please wait, this may take a while...")
         const list = await fetch(`https://api.polygon.io/v2/reference/tickers?search=${args}&perpage=50&page=1&apiKey=alae9s3cJueg35o9fCBRY2Ap7qzzDCV3`).then(r => {
             console.log(r.data.tickers)
             for (let index = 0; index < r.data.tickers.length; index++) {
@@ -42,19 +40,18 @@ client.on('message', async message => {
                 const embed = new MessageEmbed()
                     .setColor('#EFFF00')
 					.setTitle(element.name)
-                    .setURL(element.url)
                     .addFields({
                         name: 'Ticker',
                         value: element.ticker
                     }, {
-						
                         name: 'Exchange',
                         value: element.primaryExch
-                    },{
-						
-                        name: 'Currency',
-                        value: element.currency
-                    }, );
+                    },
+					{
+						name: 'Currency',
+						value: element.currency
+					}, );
+					
                 return message.channel.send(embed);
 
             }
