@@ -19,27 +19,18 @@ client.once('ready', () => {
 });
 
 client.on('message', async message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-    const args = message.content.slice(prefix.length).trim().split(/ +/);
-    const command = args.shift().toLowerCase();
+	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const command = args.shift().toLowerCase();
 
-    if (command === 'cat') {
-        const {
-            file
-        } = await fetch('https://aws.random.cat/meow').then(response => response.json());
-
-        message.channel.send(file);
-    } else if (command === 'fetch') {
-        if (!args.length) {
-            return message.channel.send('You need to supply a search term!');
-        }
-
-        const query = querystring.stringify({
-            term: args.join(' ')
-        });
+	if (command === 'fetch') {
+		if (!args.length) {
+		  return message.channel.send('You need to supply a search ticker!');
+		}
 		
-        const list = await fetch(`https://api.polygon.io/v2/reference/tickers?search=${query}&perpage=50&page=1&apiKey=alae9s3cJueg35o9fCBRY2Ap7qzzDCV3`).then(r => {
+    message.channel.send('Please wait, this may take a bit...');
+    const list  = await fetch(`https://api.polygon.io/v2/reference/tickers?search=${args}&perpage=50&page=1&apiKey=alae9s3cJueg35o9fCBRY2Ap7qzzDCV3`).then(response => response.json());
             console.log(r.data.tickers)
             for (let index = 0; index < r.data.tickers.length; index++) {
                 const element = r.data.tickers[index];
