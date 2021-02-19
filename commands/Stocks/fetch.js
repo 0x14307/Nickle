@@ -27,7 +27,6 @@ class Fetch extends Command {
         fetchEmbed.setDescription(`This can take a while.`)
         message.channel.send(fetchEmbed).then(async msg => {
             await fetch(`https://api.polygon.io/v2/reference/tickers?search=${args[0]}&perpage=50&page=1&apiKey=alae9s3cJueg35o9fCBRY2Ap7qzzDCV3`).then(r => {
-                console.log(r)
                 if (r.data.tickers.length < 1) {
                     fetchEmbed.setTitle(`:x: Error`)
                     fetchEmbed.setDescription(`Stock ${args[0]} doesn't exist.`)
