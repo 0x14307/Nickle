@@ -52,7 +52,7 @@ module.exports = class Message extends Event {
             timeout: 10000
         }))
         if (command.conf.ownerOnly) {
-            if (message.author.id !== this.client.config.OWNERS) return message.channel.send('That command is owner only.').then(m => m.delete({
+            if (!this.client.config.OWNERS.includes(message.author.id)) return message.channel.send('That command is owner only.').then(m => m.delete({
                 timeout: 10000
             }))
         }
