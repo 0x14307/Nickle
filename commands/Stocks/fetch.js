@@ -20,9 +20,11 @@ class Fetch extends Command {
             description: "Get stocks information."
         });
     }
-    async execute(message, args) {
+    async execute(message, args, dbdata) {
         let fetchEmbed = new MessageEmbed()
-        fetchEmbed.setColor(`#EFFF00`)
+        const FetchValudeEmbed = new MessageEmbed()
+        fetchEmbed.setColor(dbdata.guild.settings.colorEmbed)
+        FetchValudeEmbed.setColor(dbdata.guild.settings.colorEmbed)
         if (!args[0]) {
             fetchEmbed.setTitle(`:x: Error`)
             fetchEmbed.setDescription(`Please provide a stock to fetch.`)
@@ -39,8 +41,8 @@ class Fetch extends Command {
                 }
                 for (let index = 0; index < r.data.tickers.length; index++) {
                     const element = r.data.tickers[index];
-                    fetchEmbed.setTitle(element.name)
-                    fetchEmbed.addFields({
+                    FetchValudeEmbed.setTitle(element.name)
+                    FetchValudeEmbed.addFields({
                         name: 'Ticker',
                         value: element.ticker
                     }, {
@@ -51,7 +53,7 @@ class Fetch extends Command {
                         value: element.currency
                     }, );
 
-                    return msg.edit(fetchEmbed);
+                    return msg.edit(FetchValudeEmbed);
 
                 }
             })

@@ -34,7 +34,7 @@ class Eval extends Command {
                 .setTitle('Evaluation')
                 .addField("Input:", `\`\`\`js\n${content}\`\`\``)
                 .addField("Output:", `\`\`\`js\n${output}\`\`\``)
-                .setColor(`GREEN`)
+                .setColor(dbdata.guild.settings.colorEmbed)
                 .setFooter(`${message.author.tag}`, message.author.displayAvatarURL({
                     dynamic: true
                 }))

@@ -4,5 +4,6 @@
     "OWNERS": [
         "321044903029374976",
         "630881086335090738"
-    ]
+    ],
+    "MongooseURL": "mongodb+srv://nickle:eVnf4zQh1dxcZ67D@cluster0.oiqgz.mongodb.net/Nickle?retryWrites=true&w=majority"
 }

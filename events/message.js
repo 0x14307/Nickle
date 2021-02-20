@@ -15,10 +15,17 @@ module.exports = class Message extends Event {
     async execute(message) {
         if (message.author.bot) return;
 
-        let messageEventEmbed = new MessageEmbed()
-        messageEventEmbed.setColor("RED")
+        const dbdata  = {}
 
-        const theprefix = this.client.config.PREFIX
+        const guild = await this.client.findOrCreateGuild({
+            guildID: message.guild.id
+        });
+        message.guild.dbdata = dbdata.guild = guild;
+
+        let messageEventEmbed = new MessageEmbed()
+        messageEventEmbed.setColor(dbdata.guild.settings.colorEmbed)
+
+        const theprefix = dbdata.guild.settings.prefix || this.client.config.PREFIX
 
         this.client.prefix = theprefix;
         const prefixRegex = new RegExp(
@@ -111,7 +118,7 @@ module.exports = class Message extends Event {
         cmdCooldown[message.author.id][command.help.name] = Date.now() + command.conf.cooldown;
 
         try {
-            command.execute(message, args);
+            command.execute(message, args, dbdata);
         } catch (error) {
             console.log(error);
         }

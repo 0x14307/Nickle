@@ -12,6 +12,9 @@ class Base extends Client {
         this.commands = new Collection();
         this.events = new Collection();
         this.aliases = new Collection();
+        this.guildsData = require('../db_schema/Guild')
+        this.databaseCache = {};
+        this.databaseCache.guilds = new Collection();
     }
     loadCommand(Path, Name) {
         try {
@@ -46,7 +49,30 @@ class Base extends Client {
         delete require.cache[require.resolve(`.${Path}${path.sep}${Name}.js`)];
         return false;
     }
-
+    async findOrCreateGuild({
+        guildID: guildID
+    }, isLean) {
+        if (this.databaseCache.guilds.get(guildID)) {
+            return isLean ? this.databaseCache.guilds.get(guildID).toJSON() : this.databaseCache.guilds.get(guildID);
+        } else {
+            let guildData = (isLean ? await this.guildsData.findOne({
+                guildID: guildID
+            }).populate("members").lean() : await this.guildsData.findOne({
+                guildID: guildID
+            }).populate("members"));
+            if (guildData) {
+                if (!isLean) this.databaseCache.guilds.set(guildID, guildData);
+                return guildData;
+            } else {
+                guildData = new this.guildsData({
+                    guildID: guildID
+                });
+                await guildData.save();
+                this.databaseCache.guilds.set(guildID, guildData);
+                return isLean ? guildData.toJSON() : guildData;
+            }
+        }
+    }
     async resolveUser(search) {
         let user = null;
         if (!search || typeof search !== "string") return;

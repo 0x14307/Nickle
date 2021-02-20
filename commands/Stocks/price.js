@@ -20,9 +20,11 @@ class Price extends Command {
             description: "Get a certain stocks current price."
         });
     }
-    async execute(message, args) {
+    async execute(message, args, dbdata) {
         let priceEmbed = new MessageEmbed()
-        priceEmbed.setColor(`#EFFF00`)
+        const PriceValudeEmbed = new MessageEmbed()
+        PriceValudeEmbed.setColor(dbdata.guild.settings.colorEmbed)
+        priceEmbed.setColor(dbdata.guild.settings.colorEmbed)
         if (!args[0]) {
             priceEmbed.setTitle(`:x: Error`)
             priceEmbed.setDescription(`Please provide a price to fetch.`)
@@ -31,7 +33,7 @@ class Price extends Command {
         priceEmbed.setTitle(`⌛ Loading please wait.`)
         priceEmbed.setDescription(`This can take a while.`)
         message.channel.send(priceEmbed).then(async msg => {
-            await fetch(`https://finnhub.io/api/v1/quote?symbol=${args}&token=c0o3fln48v6qah6ru6n0`).then(r => {
+            await fetch(`https://finnhub.io/api/v1/quote?symbol=${args[0].toUpperCase()}&token=c0o3fln48v6qah6ru6n0`).then(r => {
                 if (r.data.c < 1) {
                     priceEmbed.setTitle(`:x: Error`)
                     priceEmbed.setDescription(`Price for \`${args[0]}\` doesn't exist.`)
@@ -39,7 +41,8 @@ class Price extends Command {
                 }
                 for (let index = 0; index < r.data.c; index++) {
                     const element = r.data;
-                    priceEmbed.addFields({
+                    PriceValudeEmbed.setTitle(args[0].toUpperCase())
+                    PriceValudeEmbed.addFields({
                         name: 'Current Price',
                         value: element.c
                     }, {
@@ -54,7 +57,7 @@ class Price extends Command {
                     }, );
 
 
-                    return msg.edit(priceEmbed);
+                    return msg.edit(PriceValudeEmbed);
                 }
             })
         })
