@@ -23,6 +23,11 @@ class Price extends Command {
     async execute(message, args) {
         let priceEmbed = new MessageEmbed()
         priceEmbed.setColor(`#EFFF00`)
+        if (!args[0]) {
+            priceEmbed.setTitle(`:x: Error`)
+            priceEmbed.setDescription(`Please provide a price to fetch.`)
+            return message.channel.send(priceEmbed)
+        }
         priceEmbed.setTitle(`⌛ Loading please wait.`)
         priceEmbed.setDescription(`This can take a while.`)
         message.channel.send(priceEmbed).then(async msg => {

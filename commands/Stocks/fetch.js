@@ -23,6 +23,11 @@ class Fetch extends Command {
     async execute(message, args) {
         let fetchEmbed = new MessageEmbed()
         fetchEmbed.setColor(`#EFFF00`)
+        if (!args[0]) {
+            fetchEmbed.setTitle(`:x: Error`)
+            fetchEmbed.setDescription(`Please provide a stock to fetch.`)
+            return message.channel.send(fetchEmbed)
+        }
         fetchEmbed.setTitle(`⌛ Loading please wait.`)
         fetchEmbed.setDescription(`This can take a while.`)
         message.channel.send(fetchEmbed).then(async msg => {
