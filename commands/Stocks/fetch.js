@@ -39,21 +39,19 @@ class Fetch extends Command {
                 }
                 for (let index = 0; index < r.data.tickers.length; index++) {
                     const element = r.data.tickers[index];
-                    const embed = new MessageEmbed()
-                        .setColor('#EFFF00')
-                        .setTitle(element.name)
-                        .addFields({
-                            name: 'Ticker',
-                            value: element.ticker
-                        }, {
-                            name: 'Exchange',
-                            value: element.primaryExch
-                        }, {
-                            name: 'Currency',
-                            value: element.currency
-                        }, );
+                    fetchEmbed.setTitle(element.name)
+                    fetchEmbed.addFields({
+                        name: 'Ticker',
+                        value: element.ticker
+                    }, {
+                        name: 'Exchange',
+                        value: element.primaryExch
+                    }, {
+                        name: 'Currency',
+                        value: element.currency
+                    }, );
 
-                    return msg.edit(embed);
+                    return msg.edit(fetchEmbed);
 
                 }
             })

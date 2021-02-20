@@ -39,24 +39,22 @@ class Price extends Command {
                 }
                 for (let index = 0; index < r.data.c; index++) {
                     const element = r.data;
-                    const embed = new MessageEmbed()
-                        .setColor('#EFFF00')
-                        .addFields({
-                            name: 'Current Price',
-                            value: element.c
-                        }, {
-                            name: 'High Price',
-                            value: element.h
-                        }, {
-                            name: 'Low Price',
-                            value: element.l
-                        }, {
-                            name: 'Previous Close Price',
-                            value: element.pc
-                        }, );
+                    priceEmbed.addFields({
+                        name: 'Current Price',
+                        value: element.c
+                    }, {
+                        name: 'High Price',
+                        value: element.h
+                    }, {
+                        name: 'Low Price',
+                        value: element.l
+                    }, {
+                        name: 'Previous Close Price',
+                        value: element.pc
+                    }, );
 
 
-                    return msg.edit(embed);
+                    return msg.edit(priceEmbed);
                 }
             })
         })
