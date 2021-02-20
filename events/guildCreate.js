@@ -1,6 +1,6 @@
 const Event = require('../class/Event')
 
-module.exports = class guildCreation extends Event {
+module.exports = class guildCreate extends Event {
     constructor(...args) {
         super(...args, {
             name : "guildCreate"
