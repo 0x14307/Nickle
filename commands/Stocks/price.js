@@ -2,7 +2,7 @@ const {
     MessageEmbed
 } = require('discord.js')
 const Command = require('../../class/Command')
-const fetch = require('axios')
+const puppeteer = require('puppeteer');
 
 class Price extends Command {
     constructor(client) {
@@ -20,41 +20,47 @@ class Price extends Command {
             description: "Get a certain stocks current price."
         });
     }
-    async execute(message, args) {
+    async execute(message, args, dbdata) {
         let priceEmbed = new MessageEmbed()
-        priceEmbed.setColor(`#EFFF00`)
-        priceEmbed.setTitle(`⌛ Loading please wait.`)
+        const PriceValudeEmbed = new MessageEmbed()
+        PriceValudeEmbed.setColor(dbdata.guild.settings.colorEmbed)
+        priceEmbed.setColor(dbdata.guild.settings.colorEmbed)
+        if (!args[0]) {
+            priceEmbed.setTitle(`:x: Error`)
+            priceEmbed.setDescription(`Please provide a stock to fetch.`)
+            return message.channel.send(priceEmbed)
+        }
+        priceEmbed.setTitle(`⌛ Loading please wait...`)
         priceEmbed.setDescription(`This can take a while.`)
         message.channel.send(priceEmbed).then(async msg => {
-            await fetch(`https://finnhub.io/api/v1/quote?symbol=${args}&token=c0o3fln48v6qah6ru6n0`).then(r => {
-                if (r.data.c < 1) {
-                    priceEmbed.setTitle(`:x: Error`)
-                    priceEmbed.setDescription(`Price for \`${args[0]}\` doesn't exist.`)
-                    return msg.edit(priceEmbed)
-                }
-                for (let index = 0; index < r.data.c; index++) {
-                    const element = r.data;
-                    const embed = new MessageEmbed()
-                        .setColor('#EFFF00')
-                        .addFields({
-                            name: 'Current Price',
-                            value: element.c
-                        }, {
-                            name: 'High Price',
-                            value: element.h
-                        }, {
-                            name: 'Low Price',
-                            value: element.l
-                        }, {
-                            name: 'Previous Close Price',
-                            value: element.pc
-                        }, );
+                const url = ('https://money.cnn.com/quote/quote.html?symb=GME');
+                const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+                await page.goto(url);
+                // Currently WIP (Needs filtering as well as making sure stuff shows up)
+              
+                const TickerName = await page.evaluate(
+                  () => [...document.querySelectorAll("h1.wsod_fLeft")].map(partner => partner.innerText) 
+                );
+                const TickerChange = await page.evaluate(
+                  () => [...document.querySelectorAll("td.wsod_change span.posdata")].map(partner => partner.innerText) //Gets price change.
+                );
+                const Name = TickerName;
+                const Price = TickerChange.join(' ');
+                console.log(TickerName);
+                console.log(TickerChange); 
+                browser.close();
+                PriceValudeEmbed.setTitle(Name)
+                PriceValudeEmbed.addField({
+                    name: 'Change:',
+                    value: Price,
+                }, );
 
 
-                    return msg.edit(embed);
+                return msg.edit(PriceValudeEmbed);
                 }
-            })
-        })
+            
+        )
     }
 }
 
